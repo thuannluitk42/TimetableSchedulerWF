@@ -1,0 +1,13 @@
+D:\Study\.Net\TimetableSchedulerWF\TimetableSchedulerWF\bin\Debug\TimetableSchedulerWF.exe.config
+D:\Study\.Net\TimetableSchedulerWF\TimetableSchedulerWF\bin\Debug\TimetableSchedulerWF.exe
+D:\Study\.Net\TimetableSchedulerWF\TimetableSchedulerWF\bin\Debug\TimetableSchedulerWF.pdb
+D:\Study\.Net\TimetableSchedulerWF\TimetableSchedulerWF\obj\Debug\TimetableSchedulerWF.csproj.AssemblyReference.cache
+D:\Study\.Net\TimetableSchedulerWF\TimetableSchedulerWF\obj\Debug\TimetableSchedulerWF.Form1.resources
+D:\Study\.Net\TimetableSchedulerWF\TimetableSchedulerWF\obj\Debug\TimetableSchedulerWF.Properties.Resources.resources
+D:\Study\.Net\TimetableSchedulerWF\TimetableSchedulerWF\obj\Debug\TimetableSchedulerWF.csproj.GenerateResource.cache
+D:\Study\.Net\TimetableSchedulerWF\TimetableSchedulerWF\obj\Debug\TimetableSchedulerWF.csproj.CoreCompileInputs.cache
+D:\Study\.Net\TimetableSchedulerWF\TimetableSchedulerWF\obj\Debug\TimetableSchedulerWF.exe
+D:\Study\.Net\TimetableSchedulerWF\TimetableSchedulerWF\obj\Debug\TimetableSchedulerWF.pdb
+D:\Study\.Net\TimetableSchedulerWF\TimetableSchedulerWF\bin\Debug\Newtonsoft.Json.dll
+D:\Study\.Net\TimetableSchedulerWF\TimetableSchedulerWF\bin\Debug\Newtonsoft.Json.xml
+D:\Study\.Net\TimetableSchedulerWF\TimetableSchedulerWF\obj\Debug\Timetabl.1D2FFBDE.Up2Date
