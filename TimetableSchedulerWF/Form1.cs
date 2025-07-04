@@ -7,10 +7,10 @@ using TimetableSchedulerWF.Models;
 
 namespace TimetableSchedulerWF
 {
-    public partial class Form1 : Form
+    public partial class Form1 : MetroFramework.Forms.MetroForm
     {
-        // Danh sách giáo viên cố định
-        private readonly List<Teacher> _teachers = new List<Teacher>
+        // Danh sách giáo viên mẫu
+        private readonly List<Teacher> _teachers = new List<Teacher>()
         {
             new Teacher { Name = "Cô. Hân" },
             new Teacher { Name = "Thầy. Dũ" },
@@ -19,10 +19,7 @@ namespace TimetableSchedulerWF
             new Teacher { Name = "Thầy. Sang" }
         };
 
-        // Danh sách lịch hiện tại
         private List<ScheduleEntry> _scheduleEntries = new List<ScheduleEntry>();
-
-        // Kết quả backtracking
         private List<ScheduleEntry> _result = new List<ScheduleEntry>();
 
         public Form1()
@@ -32,15 +29,28 @@ namespace TimetableSchedulerWF
         }
 
         /// <summary>
-        /// Cài đặt dữ liệu cho ComboBox và Grid khi khởi chạy.
+        /// Cài đặt ComboBox và TextBox ban đầu.
         /// </summary>
         private void InitializeControls()
         {
-            cbDay.DataSource = Enum.GetValues(typeof(DayOfWeek));
-            cbPeriod.Items.AddRange(new object[] { 1, 2, 3, 4, 5, 6 });
+            cbDay.Items.Add("-- Chọn thứ --");
+            foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+                cbDay.Items.Add(day);
+            cbDay.SelectedIndex = 0;
 
-            cbTeacher.DataSource = _teachers;
+            cbPeriod.Items.Add("-- Chọn tiết --");
+            for (int i = 1; i <= 6; i++)
+                cbPeriod.Items.Add(i);
+            cbPeriod.SelectedIndex = 0;
+
+            cbTeacher.Items.Add("-- Chọn giáo viên --");
+            foreach (var t in _teachers)
+                cbTeacher.Items.Add(t);
             cbTeacher.DisplayMember = "Name";
+            cbTeacher.SelectedIndex = 0;
+
+            txtClass.PromptText = "Nhập tên lớp...";
+            txtRoom.PromptText = "Nhập tên phòng...";
 
             dataGridView1.AutoGenerateColumns = true;
         }
@@ -50,37 +60,37 @@ namespace TimetableSchedulerWF
         /// </summary>
         private void RefreshGrid()
         {
-            dataGridView1.DataSource = null;
-            dataGridView1.DataSource = _scheduleEntries.Select(x => new
+            dataGridView1.Rows.Clear();
+            foreach (var entry in _scheduleEntries)
             {
-                Class = x.Class.Name,
-                Teacher = x.Teacher.Name,
-                Room = x.Room.Name,
-                Day = x.Day,
-                Period = x.Period
-            }).ToList();
+                dataGridView1.Rows.Add(
+                    entry.Class.Name,
+                    entry.Teacher.Name,
+                    entry.Room.Name,
+                    entry.Day,
+                    entry.Period
+                );
+            }
         }
 
-        /// <summary>
-        /// Thêm lịch học mới.
-        /// </summary>
+        /// <summary> Thêm lịch </summary>
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            if (!ValidateInput())
-                return;
+            if (!ValidateInput()) return;
 
             var newEntry = new ScheduleEntry
             {
                 Class = new Class { Name = txtClass.Text.Trim() },
-                Teacher = (Teacher)cbTeacher.SelectedItem,
+                Teacher = cbTeacher.SelectedItem as Teacher,
                 Room = new Room { Name = txtRoom.Text.Trim() },
                 Day = (DayOfWeek)cbDay.SelectedItem,
                 Period = Convert.ToInt32(cbPeriod.SelectedItem)
             };
 
-            if (HasConflict(newEntry, _scheduleEntries))
+            if (HasConflictAdvanced(newEntry))
             {
-                MessageBox.Show("Conflict detected! Same slot used by class/teacher/room.");
+                MetroFramework.MetroMessageBox.Show(this, "Xung đột lịch!", "Xung đột",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -88,153 +98,175 @@ namespace TimetableSchedulerWF
             RefreshGrid();
         }
 
-        /// <summary>
-        /// Xoá lịch học đã chọn.
-        /// </summary>
+        /// <summary> Xoá lịch </summary>
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.SelectedRows.Count == 0)
+            int index = dataGridView1.CurrentRow?.Index ?? -1;
+            if (index < 0 || index >= _scheduleEntries.Count)
             {
-                MessageBox.Show("Please select a row to delete.");
+                MetroFramework.MetroMessageBox.Show(this, "Hãy chọn lịch để xoá!", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            var row = dataGridView1.SelectedRows[0];
-            var className = row.Cells["Class"].Value.ToString();
-            var teacherName = row.Cells["Teacher"].Value.ToString();
-            var roomName = row.Cells["Room"].Value.ToString();
-            var day = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), row.Cells["Day"].Value.ToString());
-            var period = Convert.ToInt32(row.Cells["Period"].Value);
+            var confirm = MetroFramework.MetroMessageBox.Show(this, "Xác nhận xoá lịch này?", "Xác nhận",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            var entry = _scheduleEntries.FirstOrDefault(x =>
-                x.Class.Name == className &&
-                x.Teacher.Name == teacherName &&
-                x.Room.Name == roomName &&
-                x.Day == day &&
-                x.Period == period);
-
-            if (entry != null)
+            if (confirm == DialogResult.Yes)
             {
-                _scheduleEntries.Remove(entry);
+                _scheduleEntries.RemoveAt(index);
                 RefreshGrid();
             }
         }
 
-        /// <summary>
-        /// Lưu lịch ra file TXT.
-        /// </summary>
-        private void btnSave_Click(object sender, EventArgs e)
+        /// <summary> Cập nhật lịch </summary>
+        private void btnUpdate_Click(object sender, EventArgs e)
         {
-            using (var sw = new StreamWriter("schedule.txt"))
+            int index = dataGridView1.CurrentRow?.Index ?? -1;
+
+            if (index < 0 || index >= _scheduleEntries.Count)
             {
-                foreach (var entry in _scheduleEntries)
-                {
-                    sw.WriteLine($"{entry.Class.Name},{entry.Teacher.Name},{entry.Room.Name},{entry.Day},{entry.Period}");
-                }
+                MetroFramework.MetroMessageBox.Show(this, "Hãy chọn lịch để cập nhật!", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
 
-            MessageBox.Show("Saved to schedule.txt");
+            if (!ValidateInput()) return;
+
+            var updatedEntry = new ScheduleEntry
+            {
+                Class = new Class { Name = txtClass.Text.Trim() },
+                Teacher = cbTeacher.SelectedItem as Teacher,
+                Room = new Room { Name = txtRoom.Text.Trim() },
+                Day = (DayOfWeek)cbDay.SelectedItem,
+                Period = Convert.ToInt32(cbPeriod.SelectedItem)
+            };
+
+            // Tạm loại bỏ entry hiện tại để so xung đột
+            var tempList = _scheduleEntries.Where((_, i) => i != index).ToList();
+
+            if (HasConflictAdvanced(updatedEntry, tempList))
+            {
+                MetroFramework.MetroMessageBox.Show(this, "Xung đột lịch!", "Xung đột",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            _scheduleEntries[index] = updatedEntry;
+
+            RefreshGrid();
+            ClearInput();
+            MetroFramework.MetroMessageBox.Show(this, "Đã cập nhật!", "Thành công",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        /// <summary>
-        /// Sinh lịch ngẫu nhiên.
-        /// </summary>
+        private void ClearInput()
+        {
+            txtClass.Clear();
+            txtRoom.Clear();
+            cbTeacher.SelectedIndex = -1;
+            cbDay.SelectedIndex = -1;
+            cbPeriod.SelectedIndex = -1;
+        }
+
+        /// <summary> Lưu JSON </summary>
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var json = System.Text.Json.JsonSerializer.Serialize(_scheduleEntries);
+                string path = Path.GetFullPath("schedule.json");
+                File.WriteAllText(path, json);
+                MetroFramework.MetroMessageBox.Show(this, "Đã lưu file `schedule.json`!", "Thành công",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MetroFramework.MetroMessageBox.Show(this, $"Lỗi khi lưu: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary> Load JSON </summary>
+        private void btnLoad_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // link to file schedule.json: TimetableSchedulerWF\bin\Debug\net472\schedule.json
+                string path = Path.GetFullPath("schedule.json");
+                //Console.WriteLine(path);
+                if (!File.Exists(path))
+                {
+                    MetroFramework.MetroMessageBox.Show(this, "Không tìm thấy file.", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var json = File.ReadAllText(path);
+                _scheduleEntries = System.Text.Json.JsonSerializer.Deserialize<List<ScheduleEntry>>(json) ?? new List<ScheduleEntry>();
+                RefreshGrid();
+                MetroFramework.MetroMessageBox.Show(this, "Đã tải lại lịch!", "Hoàn tất",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MetroFramework.MetroMessageBox.Show(this, $"Lỗi khi tải: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary> Sinh ngẫu nhiên lịch </summary>
         private void btnAutoGenerate_Click(object sender, EventArgs e)
         {
-            var classes = new List<Class>
-            {
-                new Class { Name = "Toán" },
-                new Class { Name = "Vật Lý" },
-                new Class { Name = "Hoá Học" },
-                new Class { Name = "Ngữ Văn" },
-                new Class { Name = "Tiếng Anh" }
-            };
-
-            var rooms = new List<Room>
-            {
-                new Room { Name = "PV 101" },
-                new Room { Name = "PV 102" },
-                new Room { Name = "HD 101" },
-                new Room { Name = "HD 102" },
-                new Room { Name = "Lab 1" }
-            };
-
             var rand = new Random();
             _scheduleEntries.Clear();
 
+            var classes = new[] { "Toán", "Lý", "Hoá", "Văn", "Anh" }.Select(name => new Class { Name = name }).ToList();
+            var rooms = new[] { "101", "102", "103" }.Select(name => new Room { Name = name }).ToList();
+
             foreach (var cls in classes)
             {
-                var teacher = _teachers[rand.Next(_teachers.Count)];
-                var room = rooms[rand.Next(rooms.Count)];
-                var day = (DayOfWeek)rand.Next(1, 6);
-                var period = rand.Next(1, 7);
-
                 var entry = new ScheduleEntry
                 {
                     Class = cls,
-                    Teacher = teacher,
-                    Room = room,
-                    Day = day,
-                    Period = period
+                    Teacher = _teachers[rand.Next(_teachers.Count)],
+                    Room = rooms[rand.Next(rooms.Count)],
+                    Day = (DayOfWeek)rand.Next(1, 6),
+                    Period = rand.Next(1, 7)
                 };
 
                 if (!HasConflict(entry, _scheduleEntries))
-                {
                     _scheduleEntries.Add(entry);
-                }
             }
 
             RefreshGrid();
         }
 
-        /// <summary>
-        /// Backtracking sắp xếp tối ưu.
-        /// </summary>
+        /// <summary> Backtracking tối ưu </summary>
         private void btnBacktracking_Click(object sender, EventArgs e)
         {
-            var classes = new List<Class>
-            {
-                new Class { Name = "Math" },
-                new Class { Name = "Physics" },
-                new Class { Name = "Chemistry" }
-            };
-
-            var rooms = new List<Room>
-            {
-                new Room { Name = "Room 101" },
-                new Room { Name = "Room 102" },
-                new Room { Name = "Lab 1" }
-            };
-
+            var classes = new[] { "Math", "Physics", "Chemistry" }.Select(n => new Class { Name = n }).ToList();
+            var rooms = new[] { "Room 101", "Room 102", "Lab 1" }.Select(n => new Room { Name = n }).ToList();
             var slots = new List<Slot>();
+
             foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
-            {
-                if (day == DayOfWeek.Saturday || day == DayOfWeek.Sunday) continue;
+                if (day >= DayOfWeek.Monday && day <= DayOfWeek.Friday)
+                    for (int p = 1; p <= 5; p++) slots.Add(new Slot { Day = day, Period = p });
 
-                for (int p = 1; p <= 5; p++)
-                {
-                    slots.Add(new Slot { Day = day, Period = p });
-                }
-            }
+            bool success = Backtracking(classes, _teachers, rooms, slots, new List<ScheduleEntry>(), 0);
 
-            var current = new List<ScheduleEntry>();
-            bool success = Backtracking(classes, _teachers, rooms, slots, current, 0);
+            MetroFramework.MetroMessageBox.Show(this,
+                success ? "Đã tìm thấy lịch tối ưu!" : "Không tìm thấy lịch phù hợp.",
+                "Kết quả", MessageBoxButtons.OK,
+                success ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
 
             if (success)
             {
                 _scheduleEntries = _result;
                 RefreshGrid();
-                MessageBox.Show("Timetable found successfully!");
-            }
-            else
-            {
-                MessageBox.Show("No valid timetable found.");
             }
         }
 
-        /// <summary>
-        /// Backtracking core.
-        /// </summary>
         private bool Backtracking(List<Class> classes, List<Teacher> teachers, List<Room> rooms, List<Slot> slots, List<ScheduleEntry> current, int index)
         {
             if (index >= classes.Count)
@@ -244,64 +276,76 @@ namespace TimetableSchedulerWF
             }
 
             var cls = classes[index];
-
             foreach (var teacher in teachers)
-            {
                 foreach (var room in rooms)
-                {
                     foreach (var slot in slots)
                     {
-                        var entry = new ScheduleEntry
-                        {
-                            Class = cls,
-                            Teacher = teacher,
-                            Room = room,
-                            Day = slot.Day,
-                            Period = slot.Period
-                        };
+                        var entry = new ScheduleEntry { Class = cls, Teacher = teacher, Room = room, Day = slot.Day, Period = slot.Period };
 
-                        if (HasConflict(entry, current))
-                            continue;
+                        if (HasConflict(entry, current)) continue;
 
                         current.Add(entry);
-
-                        if (Backtracking(classes, teachers, rooms, slots, current, index + 1))
-                            return true;
-
+                        if (Backtracking(classes, teachers, rooms, slots, current, index + 1)) return true;
                         current.RemoveAt(current.Count - 1);
                     }
-                }
-            }
 
             return false;
         }
 
-        /// <summary>
-        /// Kiểm tra xung đột slot.
-        /// </summary>
-        private bool HasConflict(ScheduleEntry newEntry, List<ScheduleEntry> list)
-        {
-            return list.Any(e =>
-                e.Day == newEntry.Day &&
-                e.Period == newEntry.Period &&
-                (e.Teacher.Name == newEntry.Teacher.Name ||
-                 e.Room.Name == newEntry.Room.Name ||
-                 e.Class.Name == newEntry.Class.Name));
-        }
+        /// <summary> Kiểm tra xung đột slot </summary>
+        private bool HasConflict(ScheduleEntry newEntry, List<ScheduleEntry> list) =>
+            list.Any(e => e.Day == newEntry.Day && e.Period == newEntry.Period &&
+                         (e.Teacher.Name == newEntry.Teacher.Name || e.Room.Name == newEntry.Room.Name || e.Class.Name == newEntry.Class.Name));
 
-        /// <summary>
-        /// Kiểm tra dữ liệu nhập.
-        /// </summary>
+        private bool HasConflictAdvanced(ScheduleEntry newEntry, List<ScheduleEntry> list = null) =>
+            (list ?? _scheduleEntries).Any(e => e.Day == newEntry.Day && e.Period == newEntry.Period &&
+                                                (e.Teacher.Name.Equals(newEntry.Teacher.Name, StringComparison.OrdinalIgnoreCase) ||
+                                                 e.Room.Name.Equals(newEntry.Room.Name, StringComparison.OrdinalIgnoreCase) ||
+                                                 e.Class.Name.Equals(newEntry.Class.Name, StringComparison.OrdinalIgnoreCase)));
+
+        /// <summary> Validate dữ liệu </summary>
         private bool ValidateInput()
         {
-            if (string.IsNullOrWhiteSpace(txtClass.Text) || string.IsNullOrWhiteSpace(txtRoom.Text) ||
-                cbTeacher.SelectedItem == null || cbDay.SelectedItem == null || cbPeriod.SelectedItem == null)
+            if (string.IsNullOrWhiteSpace(txtClass.Text) || string.IsNullOrWhiteSpace(txtRoom.Text)
+                || cbTeacher.SelectedIndex <= 0 || cbDay.SelectedIndex <= 0 || cbPeriod.SelectedIndex <= 0)
             {
-                MessageBox.Show("Please fill in all fields.");
+                MetroFramework.MetroMessageBox.Show(this, "Nhập đủ thông tin!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
-
             return true;
         }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            string keyword = txtSearch.Text.Trim().ToLower();
+
+            var filtered = _scheduleEntries.Where(entry =>
+                entry.Class.Name.ToLower().Contains(keyword) ||
+                entry.Teacher.Name.ToLower().Contains(keyword) ||
+                entry.Room.Name.ToLower().Contains(keyword) ||
+                entry.Day.ToString().ToLower().Contains(keyword) ||
+                entry.Period.ToString().Contains(keyword)
+            ).ToList();
+
+            dataGridView1.Rows.Clear();
+            foreach (var entry in filtered)
+            {
+                dataGridView1.Rows.Add(
+                    entry.Class.Name,
+                    entry.Teacher.Name,
+                    entry.Room.Name,
+                    entry.Day,
+                    entry.Period
+                );
+            }
+        }
+
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            txtSearch.Clear();
+            RefreshGrid();
+        }
+
     }
 }

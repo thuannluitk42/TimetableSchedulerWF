@@ -3,20 +3,20 @@
   "WorkspaceRootPath": "D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0FB462B9-E7A7-4EC8-AAFD-D78B8C439029}|TimetableSchedulerWF.csproj|d:\\study\\.net\\timetableschedulerwf\\timetableschedulerwf\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0FB462B9-E7A7-4EC8-AAFD-D78B8C439029}|TimetableSchedulerWF.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0FB462B9-E7A7-4EC8-AAFD-D78B8C439029}|TimetableSchedulerWF.csproj|d:\\study\\.net\\timetableschedulerwf\\timetableschedulerwf\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0FB462B9-E7A7-4EC8-AAFD-D78B8C439029}|TimetableSchedulerWF.csproj|solutionrelative:form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{0FB462B9-E7A7-4EC8-AAFD-D78B8C439029}|TimetableSchedulerWF.csproj|d:\\study\\.net\\timetableschedulerwf\\timetableschedulerwf\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{0FB462B9-E7A7-4EC8-AAFD-D78B8C439029}|TimetableSchedulerWF.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0FB462B9-E7A7-4EC8-AAFD-D78B8C439029}|TimetableSchedulerWF.csproj|d:\\study\\.net\\timetableschedulerwf\\timetableschedulerwf\\models\\slot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0FB462B9-E7A7-4EC8-AAFD-D78B8C439029}|TimetableSchedulerWF.csproj|solutionrelative:models\\slot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{0FB462B9-E7A7-4EC8-AAFD-D78B8C439029}|TimetableSchedulerWF.csproj|D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0FB462B9-E7A7-4EC8-AAFD-D78B8C439029}|TimetableSchedulerWF.csproj|solutionrelative:form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0FB462B9-E7A7-4EC8-AAFD-D78B8C439029}|TimetableSchedulerWF.csproj|D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\models\\scheduleentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0FB462B9-E7A7-4EC8-AAFD-D78B8C439029}|TimetableSchedulerWF.csproj|solutionrelative:models\\scheduleentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0FB462B9-E7A7-4EC8-AAFD-D78B8C439029}|TimetableSchedulerWF.csproj|D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0FB462B9-E7A7-4EC8-AAFD-D78B8C439029}|TimetableSchedulerWF.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,53 +38,52 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Slot.cs",
-              "DocumentMoniker": "D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\Models\\Slot.cs",
-              "RelativeDocumentMoniker": "Models\\Slot.cs",
-              "ToolTip": "D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\Models\\Slot.cs",
-              "RelativeToolTip": "Models\\Slot.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-01T09:11:04.691Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Form1.Designer.cs",
               "DocumentMoniker": "D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\Form1.Designer.cs",
               "RelativeDocumentMoniker": "Form1.Designer.cs",
               "ToolTip": "D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\Form1.Designer.cs",
               "RelativeToolTip": "Form1.Designer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADgAAAAnAAAAAAAAAA==",
+              "ViewState": "AgIAAEoBAAAAAAAAAAApwFIBAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-01T08:24:28.01Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Form1.cs",
-              "DocumentMoniker": "D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\Form1.cs",
-              "RelativeDocumentMoniker": "Form1.cs",
-              "ToolTip": "D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\Form1.cs",
-              "RelativeToolTip": "Form1.cs",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAkwDMBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-01T08:24:18.953Z",
+              "WhenOpened": "2025-07-03T07:32:16.368Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "ScheduleEntry.cs",
+              "DocumentMoniker": "D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\Models\\ScheduleEntry.cs",
+              "RelativeDocumentMoniker": "Models\\ScheduleEntry.cs",
+              "ToolTip": "D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\Models\\ScheduleEntry.cs",
+              "RelativeToolTip": "Models\\ScheduleEntry.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-03T08:44:10.814Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Form1.cs",
+              "DocumentMoniker": "D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\Form1.cs",
+              "RelativeDocumentMoniker": "Form1.cs",
+              "ToolTip": "D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\Form1.cs",
+              "RelativeToolTip": "Form1.cs",
+              "ViewState": "AgIAAKQAAAAAAAAAAAAlwKwAAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-02T10:12:57.572Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "Form1.cs [Design]",
               "DocumentMoniker": "D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\Form1.cs",
               "RelativeDocumentMoniker": "Form1.cs",
               "ToolTip": "D:\\Study\\.Net\\TimetableSchedulerWF\\TimetableSchedulerWF\\Form1.cs [Design]",
               "RelativeToolTip": "Form1.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-01T08:21:59.328Z",
+              "WhenOpened": "2025-07-02T10:12:55.498Z",
               "EditorCaption": " [Design]"
             }
           ]
